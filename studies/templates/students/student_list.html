@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Study Management</title>
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 20px;
+        color: #333;
+        background-color: #e6eaf2; /* Changed background color to match the design */
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+      th {
+        background-color: #333;
+        color: white;
+        text-align: center;
+      }
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+      tr:hover {
+        background-color: #f1f1f1;
+      }
+      a {
+        display: inline-block;
+        margin-right: 10px;
+        padding: 8px 12px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+        color: white;
+        background-color: #007bff;
+        transition: background-color 0.3s, transform 0.3s;
+      }
+      a:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
+      .add-student,
+      .delete-selected {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, transform 0.3s;
+      }
+      .add-student:hover,
+      .delete-selected:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
+      .button-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+      }
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
+    </style>
+  </head>
+  <body>
+    <h1>Study Management</h1>
+    <table>
+      <tr>
+        <th><input type="checkbox" id="select-all" /></th>
+        <th>Study Name</th>
+        <th>Study Phase</th>
+        <th>Sponsor Name</th>
+        <th>Study Description</th>
+        <th>View</th>
+        <th>Edit</th>
+      </tr>
+      {% for student in students %}
+      <tr>
+        <td><input type="checkbox" class="select-row" data-delete-url="{% url 'student_delete' student.pk %}" /></td>
+        <td>{{ student.study_name }}</td>
+        <td>{{ student.study_phase }}</td>
+        <td>{{ student.sponsor_name }}</td>
+        <td>{{ student.study_description }}</td>
+        <td>
+          <a href="{% url 'student_view' student.pk %}" style="background-color: #007bff">View</a>
+        </td>
+        <td>
+          <a href="{% url 'student_update' student.pk %}" style="background-color: #ffc107; color: #333">Edit</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    <div class="button-container">
+      <a href="{% url 'student_create' %}" class="add-student">Add Study</a>
+      <a href="#" class="delete-selected" onclick="deleteSelected()">Delete Selected</a>
+    </div>
+
+    <script>
+      // Select all rows when the header checkbox is clicked
+      document.getElementById("select-all").addEventListener("click", function () {
+        const checkboxes = document.querySelectorAll(".select-row");
+        checkboxes.forEach((checkbox) => {
+          checkbox.checked = this.checked;
+        });
+      });
+
+      // Delete selected rows
+      function deleteSelected() {
+        const selectedRows = document.querySelectorAll(".select-row:checked");
+        if (selectedRows.length === 0) {
+          alert("Please select at least one study to delete.");
+          return;
+        }
+        selectedRows.forEach((checkbox) => {
+          const deleteUrl = checkbox.getAttribute("data-delete-url");
+          fetch(deleteUrl, {
+            method: 'POST', // Use 'DELETE' if your backend supports it
+            headers: {
+              'X-CSRFToken': '{{ csrf_token }}', // Include CSRF token for security in Django
+              'Content-Type': 'application/json'
+            },
+          }).then(response => {
+            if (response.ok) {
+              // If delete is successful, remove the row from the table
+              checkbox.closest("tr").remove();
+            } else {
+              alert("Failed to delete study.");
+            }
+          }).catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while deleting the study.");
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

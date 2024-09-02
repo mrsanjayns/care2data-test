@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Study Details</title>
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 20px;
+        color: #333;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #444;
+        border-bottom: 3px solid #007bff;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+        font-size: 32px;
+        font-weight: 500;
+      }
+      p {
+        margin: 15px 0;
+        line-height: 1.8;
+        font-size: 18px;
+      }
+      p strong {
+        color: #555;
+        font-weight: 600;
+      }
+      a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 20px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background-color 0.3s, transform 0.3s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      a:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap");
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>{{ student.study_name }}</h1>
+      <p><strong>Study Phase:</strong> {{ student.study_phase }}</p>
+      <p><strong>Sponsor Name:</strong> {{ student.sponsor_name }}</p>
+      <p><strong>Description:</strong> {{ student.study_description }}</p>
+      <a href="{% url 'student_list' %}">Back to home</a>
+    </div>
+  </body>
+</html>
